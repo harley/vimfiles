@@ -421,7 +421,5 @@ let g:user_zen_settings = {
   \  },
  \}
 
-"set colorscheme
 set background=dark
 colorscheme railscasts
-
