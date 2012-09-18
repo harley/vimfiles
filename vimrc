@@ -226,7 +226,7 @@ if has("gui_running")
     "tell the term has 256 colors
     set t_Co=256
 
-    colorscheme railscasts
+    colorscheme solarized
     set guitablabel=%M%t
     set lines=40
     set columns=115
@@ -257,7 +257,7 @@ else
     "set railscasts colorscheme when running vim in gnome terminal
     if $COLORTERM == 'gnome-terminal'
         set term=gnome-256color
-        colorscheme railscasts
+        colorscheme solarized
     else
         colorscheme default
     endif
@@ -422,4 +422,30 @@ let g:user_zen_settings = {
  \}
 
 set background=dark
-colorscheme railscasts
+colorscheme solarized
+
+function! Preserve(command)
+  " Preparation: save last search, and cursor position.
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+  " Do the business:
+  execute a:command
+  " Clean up: restore previous search history, and cursor position
+  let @/=_s
+  call cursor(l, c)
+endfunction
+nmap _$ :call Preserve("%s/\\s\\+$//e")<CR>
+nmap _= :call Preserve("normal gg=G")<CR>
+nmap _M :call Preserve("%s/\r/\r/g")<CR>
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+au ColorScheme * highlight ExtraWhitespace guibg=red
+au BufEnter * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match ExtraWhiteSpace /\s\+$/
+
+cmap w!! w !sudo tee % >/dev/null
+
+nmap _hr :%s/\v:(\w+) \=\>/\1:/g<cr>
+nmap _h :s/\v:(\w+) \=\>/\1:/g<cr>
